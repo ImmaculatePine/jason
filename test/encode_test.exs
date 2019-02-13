@@ -75,21 +75,23 @@ defmodule Jason.EncoderTest do
     assert to_json(date) == ~s("2000-01-01")
   end
 
+  # Warning: NaiveDateTime format changed!
   test "NaiveDateTime" do
     {:ok, datetime} = NaiveDateTime.new(2000, 1, 1, 12, 13, 14)
-    assert to_json(datetime) == ~s("2000-01-01T12:13:14")
+    assert to_json(datetime) == ~s("2000-01-01T12:13:14.000000")
   end
 
+  # Warning: DateTime format changed!
   test "DateTime" do
     datetime = %DateTime{year: 2000, month: 1, day: 1, hour: 12, minute: 13, second: 14,
                          microsecond: {0, 0}, zone_abbr: "CET", time_zone: "Europe/Warsaw",
                          std_offset: -1800, utc_offset: 3600}
-    assert to_json(datetime) == ~s("2000-01-01T12:13:14+00:30")
+    assert to_json(datetime) == ~s("2000-01-01T12:13:14.000000+00:30")
 
     datetime = %DateTime{year: 2000, month: 1, day: 1, hour: 12, minute: 13, second: 14,
                          microsecond: {50000, 3}, zone_abbr: "UTC", time_zone: "Etc/UTC",
                          std_offset: 0, utc_offset: 0}
-    assert to_json(datetime) == ~s("2000-01-01T12:13:14.050Z")
+    assert to_json(datetime) == ~s("2000-01-01T12:13:14.050000Z")
   end
 
   test "Decimal" do

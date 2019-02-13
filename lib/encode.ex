@@ -227,7 +227,15 @@ defmodule Jason.Encode do
   end
 
   # TODO: benchmark the effect of inlining the to_iso8601 functions
-  for module <- [Date, Time, NaiveDateTime, DateTime] do
+  for module <- [NaiveDateTime, DateTime] do
+    defp struct(value, _escape, _encode_map, unquote(module)) do
+      %{microsecond: {ms, _}} = value
+      precise_value = %unquote(module){value | microsecond: {ms, 6}}
+      [?\", unquote(module).to_iso8601(precise_value), ?\"]
+    end
+  end
+
+  for module <- [Date, Time] do
     defp struct(value, _escape, _encode_map, unquote(module)) do
       [?\", unquote(module).to_iso8601(value), ?\"]
     end
